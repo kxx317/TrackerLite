@@ -32,8 +32,6 @@ const modalStyle = {
   height: "80%",
 };
 
-let isModalClosed = false;
-
 const TaskModal = (props) => {
   const boardId = props.boardId;
   const [task, setTask] = useState(props.task);
@@ -43,17 +41,14 @@ const TaskModal = (props) => {
 
   const [timerRunningState, setTimerRunningState] = useState(false);
 
+  let timer;
+  const timeout = 500;
+  let isModalClosed = false;
+
   useEffect(() => {
     setTask(props.task);
-    setTitle(props.task !== undefined ? props.task.title : "Untitled");
-    setContent(
-      props.task !== undefined
-        ? props.task.content
-        : "Add Description to task here"
-    );
-    setTimerRunningState(
-      props.task !== undefined ? props.task.timerRunning : false
-    );
+    setTitle(props.task !== undefined ? props.task.title : "");
+    setContent(props.task !== undefined ? props.task.content : "");
     if (props.task !== undefined) {
       isModalClosed = false;
 
@@ -62,11 +57,13 @@ const TaskModal = (props) => {
   }, [props.task]);
 
   const updateEditorHeight = () => {
-    if (editorWrapperRef.current) {
-      const box = editorWrapperRef.current;
-      box.querySelector(".ck-editor__editable_inline").style.height =
-        box.offsetHeight - 50 + "px";
-    }
+    setTimeout(() => {
+      if (editorWrapperRef.current) {
+        const box = editorWrapperRef.current;
+        box.querySelector(".ck-editor__editable_inline").style.height =
+          box.offsetHeight - 50 + "px";
+      }
+    }, timeout);
   };
 
   const onClose = () => {
@@ -86,13 +83,15 @@ const TaskModal = (props) => {
   };
 
   const updateTitle = async (e) => {
+    clearTimeout(timer);
     const newTitle = e.target.value;
-
-    try {
-      await taskApi.update(boardId, task.id, { title: newTitle });
-    } catch (err) {
-      alert(err);
-    }
+    timer = setTimeout(async () => {
+      try {
+        await taskApi.update(boardId, task.id, { title: newTitle });
+      } catch (err) {
+        alert(err);
+      }
+    }, timeout);
 
     task.title = newTitle;
     setTitle(newTitle);
@@ -100,14 +99,17 @@ const TaskModal = (props) => {
   };
 
   const updateContent = async (event, editor) => {
+    clearTimeout(timer);
     const data = editor.getData();
 
     if (!isModalClosed) {
-      try {
-        await taskApi.update(boardId, task.id, { content: data });
-      } catch (err) {
-        alert(err);
-      }
+      timer = setTimeout(async () => {
+        try {
+          await taskApi.update(boardId, task.id, { content: data });
+        } catch (err) {
+          alert(err);
+        }
+      }, timeout);
 
       task.content = data;
       setContent(data);

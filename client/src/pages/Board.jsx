@@ -40,7 +40,7 @@ const Board = () => {
     getBoardContent();
   }, [boardId]);
 
-  const handleIconChange = (newIcon) => {
+  const handleIconChange = async (newIcon) => {
     console.log("newIcon");
     try {
       let temp = [...boards];
@@ -50,7 +50,7 @@ const Board = () => {
       setIcon(newIcon);
       dispatch(setBoards(temp));
 
-      boardApi.update(boardId, { icon: newIcon });
+      await boardApi.update(boardId, { icon: newIcon });
     } catch (err) {
       alert(err);
     }

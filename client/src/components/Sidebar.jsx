@@ -53,10 +53,6 @@ const Sidebar = () => {
     setActiveIndex(activeItem);
   }, [boards, boardId, navigate]);
 
-  useEffect(() => {
-    console.log(boards);
-  }, [boards]);
-
   const logout = () => {
     localStorage.removeItem("token");
     navigate("/login");
