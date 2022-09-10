@@ -3,7 +3,7 @@ import queryString from "query-string";
 
 // const baseUrl = "http://localhost:8080/api/v1/";
 // const baseUrl = "http://kanban-api.kangxingxie.me:8080/api/v1/";
-const baseUrl = "http://159.223.76.224:8080/";
+const baseUrl = "http://159.223.76.224:8080/api/v1/";
 const getToken = () => localStorage.getItem("token");
 
 const axiosClient = axios.create({
